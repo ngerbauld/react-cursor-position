@@ -1,19 +1,16 @@
-import React, { Children, cloneElement } from 'react';
-import PropTypes from 'prop-types';
-import objectAssign from 'object-assign';
-import omit from 'object.omit';
-import Core from './lib/ElementRelativeCursorPosition';
-import addEventListener from './utils/addEventListener';
-import {
-    INTERACTIONS,
-    MOUSE_EMULATION_GUARD_TIMER_NAME
-} from './constants';
-import noop from './utils/noop';
-import PressActivation from './lib/PressActivation';
-import TouchActivation from './lib/TouchActivation';
-import TapActivation from './lib/TapActivation';
-import HoverActivation from './lib/HoverActivation';
-import ClickActivation from './lib/ClickActivation';
+import React, { Children, cloneElement } from "react";
+import PropTypes from "prop-types";
+import objectAssign from "object-assign";
+import omit from "object.omit";
+import Core from "./lib/ElementRelativeCursorPosition";
+import addEventListener from "./utils/addEventListener";
+import { INTERACTIONS, MOUSE_EMULATION_GUARD_TIMER_NAME } from "./constants";
+import noop from "./utils/noop";
+import PressActivation from "./lib/PressActivation";
+import TouchActivation from "./lib/TouchActivation";
+import TapActivation from "./lib/TapActivation";
+import HoverActivation from "./lib/HoverActivation";
+import ClickActivation from "./lib/ClickActivation";
 
 export { INTERACTIONS };
 
@@ -24,18 +21,18 @@ export default class extends React.Component {
         this.state = {
             detectedEnvironment: {
                 isMouseDetected: false,
-                isTouchDetected: false
+                isTouchDetected: false,
             },
             elementDimensions: {
                 width: 0,
-                height: 0
+                height: 0,
             },
             isActive: false,
             isPositionOutside: true,
             position: {
                 x: 0,
-                y: 0
-            }
+                y: 0,
+            },
         };
 
         this.shouldGuardAgainstMouseEmulationByDevices = false;
@@ -43,7 +40,7 @@ export default class extends React.Component {
         this.timers = [];
         this.elementOffset = {
             x: 0,
-            y: 0
+            y: 0,
         };
 
         this.onTouchStart = this.onTouchStart.bind(this);
@@ -60,17 +57,17 @@ export default class extends React.Component {
         this.setMouseActivationStrategy(props.activationInteractionMouse);
     }
 
-    static displayName = 'ReactCursorPosition';
+    static displayName = "ReactCursorPosition";
 
     static propTypes = {
         activationInteractionMouse: PropTypes.oneOf([
             INTERACTIONS.CLICK,
-            INTERACTIONS.HOVER
+            INTERACTIONS.HOVER,
         ]),
         activationInteractionTouch: PropTypes.oneOf([
             INTERACTIONS.PRESS,
             INTERACTIONS.TAP,
-            INTERACTIONS.TOUCH
+            INTERACTIONS.TOUCH,
         ]),
         children: PropTypes.any,
         className: PropTypes.string,
@@ -96,7 +93,7 @@ export default class extends React.Component {
         hoverDelayInMs: 0,
         hoverOffDelayInMs: 0,
         isEnabled: true,
-        mapChildProps: props => props,
+        mapChildProps: (props) => props,
         onActivationChanged: noop,
         onDetectedEnvironmentChanged: noop,
         onPositionChanged: noop,
@@ -193,7 +190,7 @@ export default class extends React.Component {
     onTouchDetected() {
         const environment = {
             isTouchDetected: true,
-            isMouseDetected: false
+            isMouseDetected: false,
         };
 
         this.setState({ detectedEnvironment: environment });
@@ -203,7 +200,7 @@ export default class extends React.Component {
     onMouseDetected() {
         const environment = {
             isTouchDetected: false,
-            isMouseDetected: true
+            isMouseDetected: true,
         };
 
         this.setState({ detectedEnvironment: environment });
@@ -213,7 +210,7 @@ export default class extends React.Component {
     onPositionChanged = () => {
         const { onPositionChanged } = this.props;
         onPositionChanged(this.state);
-    }
+    };
 
     componentDidMount() {
         if (this.props.isEnabled) {
@@ -255,9 +252,7 @@ export default class extends React.Component {
     init() {
         this.core = new Core(this.el);
 
-        this.setElementDimensionsState(
-            this.getElementDimensions(this.el)
-        );
+        this.setElementDimensionsState(this.getElementDimensions(this.el));
     }
 
     setTouchActivationStrategy(interaction) {
@@ -265,75 +260,61 @@ export default class extends React.Component {
             pressDurationInMs,
             pressMoveThreshold,
             tapDurationInMs,
-            tapMoveThreshold
-        }= this.props;
+            tapMoveThreshold,
+        } = this.props;
 
-        const {
-            TOUCH,
-            TAP,
-            PRESS
-        } = INTERACTIONS;
+        const { TOUCH, TAP, PRESS } = INTERACTIONS;
 
         switch (interaction) {
-            case PRESS :
+            case PRESS:
                 this.touchActivation = new PressActivation({
                     onIsActiveChanged: this.onIsActiveChanged,
                     pressDurationInMs,
-                    pressMoveThreshold
+                    pressMoveThreshold,
                 });
                 break;
-            case TAP :
+            case TAP:
                 this.touchActivation = new TapActivation({
                     onIsActiveChanged: this.onIsActiveChanged,
                     tapDurationInMs,
-                    tapMoveThreshold
+                    tapMoveThreshold,
                 });
                 break;
-            case TOUCH :
+            case TOUCH:
                 this.touchActivation = new TouchActivation({
-                    onIsActiveChanged: this.onIsActiveChanged
+                    onIsActiveChanged: this.onIsActiveChanged,
                 });
                 break;
-            default :
-                throw new Error('Must implement a touch activation strategy');
+            default:
+                throw new Error("Must implement a touch activation strategy");
         }
     }
 
     setMouseActivationStrategy(interaction) {
-        const {
-            hoverDelayInMs,
-            hoverOffDelayInMs
-        }= this.props;
+        const { hoverDelayInMs, hoverOffDelayInMs } = this.props;
 
-        const {
-            HOVER,
-            CLICK
-        } = INTERACTIONS;
+        const { HOVER, CLICK } = INTERACTIONS;
 
         switch (interaction) {
-            case  HOVER :
+            case HOVER:
                 this.mouseActivation = new HoverActivation({
                     onIsActiveChanged: this.onIsActiveChanged,
                     hoverDelayInMs,
-                    hoverOffDelayInMs
+                    hoverOffDelayInMs,
                 });
                 break;
-            case CLICK :
+            case CLICK:
                 this.mouseActivation = new ClickActivation({
-                    onIsActiveChanged: this.onIsActiveChanged
+                    onIsActiveChanged: this.onIsActiveChanged,
                 });
                 break;
-            default :
-                throw new Error('Must implement a mouse activation strategy');
+            default:
+                throw new Error("Must implement a mouse activation strategy");
         }
     }
 
     reset() {
-        const {
-            core: {
-                lastEvent: lastMouseEvent
-            } = {}
-        } = this;
+        const { core: { lastEvent: lastMouseEvent } = {} } = this;
 
         this.init();
 
@@ -341,9 +322,7 @@ export default class extends React.Component {
             return;
         }
 
-        this.setPositionState(
-            this.core.getCursorPosition(lastMouseEvent)
-        );
+        this.setPositionState(this.core.getCursorPosition(lastMouseEvent));
     }
 
     activate() {
@@ -357,7 +336,7 @@ export default class extends React.Component {
 
             this.props.onPositionChanged({
                 isPositionOutside,
-                position
+                position,
             });
 
             this.props.onActivationChanged({ isActive: false });
@@ -370,7 +349,7 @@ export default class extends React.Component {
         this.setState(
             {
                 isPositionOutside,
-                position
+                position,
             },
             this.onPositionChanged
         );
@@ -378,8 +357,8 @@ export default class extends React.Component {
 
     setElementDimensionsState(dimensions) {
         this.setState({
-            elementDimensions: dimensions
-        })
+            elementDimensions: dimensions,
+        });
     }
 
     setShouldGuardAgainstMouseEmulationByDevices() {
@@ -391,39 +370,28 @@ export default class extends React.Component {
             name: MOUSE_EMULATION_GUARD_TIMER_NAME,
             id: setTimeout(() => {
                 this.shouldGuardAgainstMouseEmulationByDevices = false;
-            }, 0)
+            }, 0),
         });
     }
 
     getElementDimensions(el) {
-        const {
-            width,
-            height
-        } = el.getBoundingClientRect();
+        const { width, height } = el.getBoundingClientRect();
 
         return {
             width,
-            height
-        }
+            height,
+        };
     }
 
     getIsPositionOutside(position) {
         const { x, y } = position;
         const {
-            elementDimensions: {
-                width,
-                height
-            }
-        } = this.state
+            elementDimensions: { width, height },
+        } = this.state;
 
-        const isPositionOutside = (
-            x < 0 ||
-            y < 0 ||
-            x > width ||
-            y > height
-        );
+        const isPositionOutside = x < 0 || y < 0 || x > width || y > height;
 
-        return  isPositionOutside;
+        return isPositionOutside;
     }
 
     getTouchEvent(e) {
@@ -431,7 +399,7 @@ export default class extends React.Component {
     }
 
     getIsReactComponent(reactElement) {
-        return typeof reactElement.type === 'function';
+        return typeof reactElement.type === "function";
     }
 
     shouldDecorateChild(child) {
@@ -448,20 +416,26 @@ export default class extends React.Component {
 
     decorateChildren(children, props) {
         return Children.map(children, (child) => {
-            return this.shouldDecorateChild(child) ? this.decorateChild(child, props) : child;
+            return this.shouldDecorateChild(child)
+                ? this.decorateChild(child, props)
+                : child;
         });
     }
 
     addEventListeners() {
         this.eventListeners.push(
-            addEventListener(this.el, 'touchstart', this.onTouchStart, { passive: false }),
-            addEventListener(this.el, 'touchmove', this.onTouchMove, { passive: false }),
-            addEventListener(this.el, 'touchend', this.onTouchEnd),
-            addEventListener(this.el, 'touchcancel', this.onTouchCancel),
-            addEventListener(this.el, 'mouseenter', this.onMouseEnter),
-            addEventListener(this.el, 'mousemove', this.onMouseMove),
-            addEventListener(this.el, 'mouseleave', this.onMouseLeave),
-            addEventListener(this.el, 'click', this.onClick)
+            addEventListener(this.el, "touchstart", this.onTouchStart, {
+                passive: false,
+            }),
+            addEventListener(this.el, "touchmove", this.onTouchMove, {
+                passive: false,
+            }),
+            addEventListener(this.el, "touchend", this.onTouchEnd),
+            addEventListener(this.el, "touchcancel", this.onTouchCancel),
+            addEventListener(this.el, "mouseenter", this.onMouseEnter),
+            addEventListener(this.el, "mousemove", this.onMouseMove),
+            addEventListener(this.el, "mouseleave", this.onMouseLeave),
+            addEventListener(this.el, "click", this.onClick)
         );
     }
 
@@ -472,8 +446,8 @@ export default class extends React.Component {
     }
 
     getPassThroughProps() {
-        const ownPropNames = Object.keys(this.constructor.propTypes);
-        return omit(this.props, ownPropNames);
+        const ownPropNames = Object.keys(this.constructor.propTypes || {});
+        if (ownPropNames.length) return omit(this.props, ownPropNames);
     }
 
     render() {
@@ -485,13 +459,15 @@ export default class extends React.Component {
         );
 
         return (
-            <div { ...{
-                className,
-                ref: (el) => this.el = el,
-                style: objectAssign({}, style, {
-                    WebkitUserSelect: 'none'
-                })
-            }}>
+            <div
+                {...{
+                    className,
+                    ref: (el) => (this.el = el),
+                    style: objectAssign({}, style, {
+                        WebkitUserSelect: "none",
+                    }),
+                }}
+            >
                 {this.decorateChildren(children, props)}
             </div>
         );
